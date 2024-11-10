@@ -1,0 +1,20 @@
+.hexagon {
+    height: 200px; /* adjust to control the size  */
+    aspect-ratio: cos(30deg);
+    clip-path: polygon(-50% 50%,50% 100%,150% 50%,50% 0);
+    background: #3B8686;
+    border: 1px black;
+}
+
+.board {
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    align-content: center;
+    margin: -25px;
+}
