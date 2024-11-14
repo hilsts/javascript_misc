@@ -1,3 +1,41 @@
+// const myCanvas = document.getElementById("myCanvas");
+// const myctx = myCanvas.getContext("2d");
+const img = document.getElementById("source");
+// const width = (myCanvas.width = window.innerWidth);
+// const height = (myCanvas.height = window.innerHeight);
+
+// myctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
+BOARD_MATRIX = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 1, d, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, s, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, d, 1, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, d, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, s, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, d, 1, d, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, d, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], 
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 0], 
+    [0, s, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, d, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  
+]
+
+
+
 const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
   for (let y = 0; y < canvas.width / tileSize; y++) {
     for (let x = 0; x < canvas.height / tileSize; x++) {
@@ -8,14 +46,15 @@ const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
 
       if (tileNum === highlightNum) {
         ctx.fillStyle = "#f0f";
+        ctx.fillRect(xx, yy, tileSize, tileSize);
       }
       else {
-        ctx.fillStyle = parity ? "#555" : "#ddd";
+        // ctx.fillStyle = parity ? "#555" : "#ddd";
       }
       
-      ctx.fillRect(xx, yy, tileSize, tileSize);
-      ctx.fillStyle = parity ? "#fff" : "#000";
-      ctx.fillText(tileNum, xx, yy);
+      ctx.strokeRect(xx, yy, tileSize, tileSize);
+    //   ctx.fillStyle = parity ? "#fff" : "#000";
+    //   ctx.fillText(tileNum, xx, yy);
     }
   }
 };
@@ -29,6 +68,8 @@ ctx.textBaseline = "top";
 const tileSize = canvas.width / size;
 const status = document.createElement("pre");
 let lastTile = -1;
+
+// ctx.drawImage(img, 0, 0);
 
 drawGrid(canvas, ctx, tileSize);
 document.body.style.display = "flex";
@@ -45,6 +86,7 @@ canvas.addEventListener("mousemove", evt => {
   if (tileNum !== lastTile) {
     lastTile = tileNum;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
     drawGrid(canvas, ctx, tileSize, tileNum);
   }
   
