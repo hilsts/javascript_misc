@@ -1,3 +1,15 @@
+async function fetchAsync (url) {
+    let response = await fetch(url);
+    let data = response.json();
+    return data;
+  }
+
+function getDice () {
+    const dice_url = 'http://127.0.0.1:8000/dice';
+    dice_result = fetchAsync(dice_url);
+    return dice_result
+}
+
 // const myCanvas = document.getElementById("myCanvas");
 // const myctx = myCanvas.getContext("2d");
 const img = document.getElementById("source");
@@ -5,7 +17,10 @@ const img = document.getElementById("source");
 // const height = (myCanvas.height = window.innerHeight);
 
 // myctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
-BOARD_MATRIX = [
+const s = 'start';
+const d = 'door';
+
+const BOARD_MATRIX = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0], 
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -44,15 +59,15 @@ const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
       const xx = x * tileSize;
       const yy = y * tileSize;
 
-      if (tileNum === highlightNum) {
-        ctx.fillStyle = "#f0f";
-        ctx.fillRect(xx, yy, tileSize, tileSize);
-      }
-      else {
-        // ctx.fillStyle = parity ? "#555" : "#ddd";
+    
+      if (BOARD_MATRIX[y][x] != 0) {
+        ctx.strokeRect(xx, yy, tileSize, tileSize);
+        if (tileNum === highlightNum) {
+            ctx.fillStyle = "#f0f";
+            ctx.fillRect(xx, yy, tileSize, tileSize);
+          }
       }
       
-      ctx.strokeRect(xx, yy, tileSize, tileSize);
     //   ctx.fillStyle = parity ? "#fff" : "#000";
     //   ctx.fillText(tileNum, xx, yy);
     }
@@ -91,7 +106,7 @@ canvas.addEventListener("mousemove", evt => {
   }
   
   status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
-  tile coords : {${tileX}, ${tileY}}
+  tile coords : {${tileX}, ${tileY}}, tile value: ${BOARD_MATRIX[tileY][tileX]}
   tile number : ${tileNum}`;
 });
 
@@ -104,3 +119,12 @@ canvas.addEventListener("mouseout", event => {
   status.innerText = "";
   lastTile = -1;
 });
+
+const diceButton = document.getElementById("dice");
+diceButton.addEventListener("click", evt => {
+    var diceResult = getDice()
+    var data = diceResult.then((data) => {
+        status.innerText += `\n   dice: ${data.dice}`
+    });
+    
+} )
