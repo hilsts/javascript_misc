@@ -86,10 +86,12 @@ let lastTile = -1;
 
 // ctx.drawImage(img, 0, 0);
 
+const boardDiv = document.getElementById("board");
 drawGrid(canvas, ctx, tileSize);
-document.body.style.display = "flex";
-document.body.style.alignItems = "flex-start";
-document.body.appendChild(canvas);
+// document.body.style.display = "flex";
+// document.body.style.alignItems = "flex-start";
+boardDiv.appendChild(canvas);
+// document.body.appendChild(canvas);
 document.body.appendChild(status);
 
 canvas.addEventListener("mousemove", evt => {
@@ -121,6 +123,13 @@ canvas.addEventListener("mouseout", event => {
 });
 
 const diceButton = document.getElementById("dice");
+// const diceButtonText = document.createTextNode("Roll the dice");
+// diceButton.name = "diceButton";
+// diceButton.style.alignContent = "left";
+// diceButton.appendChild(diceButtonText);
+// document.body.appendChild(diceButton);
+
+
 diceButton.addEventListener("click", evt => {
     var diceResult = getDice()
     var data = diceResult.then((data) => {
@@ -128,3 +137,12 @@ diceButton.addEventListener("click", evt => {
     });
     
 } )
+
+const cards = document.getElementsByClassName("card");
+const test_cards = ["./assets/cards/BILLIARD_ROOM.jpg", "./assets/cards/MISS_SCARLET.jpg", "./assets/cards/LEAD_PIPE.jpg"];
+
+for (var i =0; i < cards.length; i++) {
+  cards[i].src = test_cards[i];
+  console.log(cards[i].src);
+
+}

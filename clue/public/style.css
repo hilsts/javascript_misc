@@ -1,0 +1,13 @@
+#game_wrapper {
+    display: flex;
+}
+
+#ui {
+    align-items: center;
+}
+
+.card {
+    width: 100px;
+    height: 150px;
+
+}
