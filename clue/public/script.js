@@ -138,11 +138,19 @@ diceButton.addEventListener("click", evt => {
     
 } )
 
-const cards = document.getElementsByClassName("card");
-const test_cards = ["./assets/cards/BILLIARD_ROOM.jpg", "./assets/cards/MISS_SCARLET.jpg", "./assets/cards/LEAD_PIPE.jpg"];
+const cardsDiv = document.getElementById("cards");
+const test_cards = [
+  "./assets/cards/BILLIARD_ROOM.jpg", "./assets/cards/MISS_SCARLET.jpg", "./assets/cards/LEAD_PIPE.jpg",
+  "./assets/cards/ROPE.jpg", "./assets/cards/REVOLVER.jpg"
+];
 
-for (var i =0; i < cards.length; i++) {
-  cards[i].src = test_cards[i];
-  console.log(cards[i].src);
 
+
+for (var i =0; i < test_cards.length; i++) {
+  const new_card = document.createElement("img");
+  new_card.id = "card_" + String(i);
+  new_card.className = "card";
+  new_card.src = test_cards[i];
+  console.log(new_card);
+  cardsDiv.appendChild(new_card);
 }
