@@ -1,5 +1,14 @@
 import { getDice } from './requests.js';
 
+function isArrayInArray(arr, item){
+  var item_as_string = JSON.stringify(item);
+
+  var contains = arr.some(function(ele){
+    return JSON.stringify(ele) === item_as_string;
+  });
+  return contains;
+}
+
 // const myCanvas = document.getElementById("myCanvas");
 // const myctx = myCanvas.getContext("2d");
 const img = document.getElementById("source");
@@ -11,40 +20,48 @@ const s = 'start';
 const d = 'door';
 
 const BOARD_MATRIX = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 1, 1, 1, d, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, s, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, d, 1, 1, 1, 1, 1, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, d, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, s, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 1, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, d, 1, d, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, d, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], 
-    [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 0], 
-    [0, s, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, d, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0], 
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 1, 1, 1, 1, 1, d, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, s, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, d, 1, 1, 1, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, d, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, s, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, d, 1, d, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, d, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, d, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, d, 1, 1, 1, 1, 0],
+  [0, s, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, d, 1, d, 0, 0, 0, 0, 0, 0, 0, 0, d, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+const kitchen = [[19, 19], [20, 19], [21, 19], [22, 19], [23, 19], [19, 20], [20, 20], [21, 20],
+[22, 20], [23, 20], [24, 20], [19, 21], [20, 21], [21, 21], [22, 21], [23, 21], [24, 21], [19, 22], [20, 22], [21, 22], [22, 22], [23, 22],
+[24, 22], [19, 23], [20, 23], [21, 23], [22, 23], [23, 23], [24, 23], [19, 24], [20, 24], [21, 24], [22, 24], [23, 24], [24, 24]]
+
+const kitchen_path = [
+  [19, 19], [24, 19], [24, 20], [25, 20], [25, 25], [19, 25], [19, 19]
 ]
 
 const drawPins = (ctx, tileSize, pinCoord) => {
-  
-  const pinX = (pinCoord[0] * tileSize) + tileSize/2;
-  const pinY = (pinCoord[1] * tileSize) + tileSize/2;
+
+  const pinX = (pinCoord[0] * tileSize) + tileSize / 2;
+  const pinY = (pinCoord[1] * tileSize) + tileSize / 2;
   ctx.beginPath();
-  ctx.arc(pinX, pinY, tileSize/2, 0, 2 * Math.PI);
+  ctx.arc(pinX, pinY, tileSize / 2, 0, 2 * Math.PI);
   ctx.fillStyle = 'red';
   ctx.fill();
   ctx.lineWidth = 2;
@@ -59,19 +76,40 @@ const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
       const tileNum = x + canvas.width / tileSize * y;
       const xx = x * tileSize;
       const yy = y * tileSize;
-    
+
       if (BOARD_MATRIX[y][x] != 0) {
         ctx.strokeStyle = "black";
         ctx.strokeRect(xx, yy, tileSize, tileSize);
-        
+
         if (tileNum === highlightNum) {
-            ctx.fillStyle = "white";
-            ctx.fillRect(xx, yy, tileSize, tileSize);
-          }
+          // ctx.fillStyle = "white";
+          // (250,130,55, 0.4) <-- laranja complementar
+          ctx.fillStyle = "rgba(55, 175, 250, 0.4)";
+          ctx.fillRect(xx, yy, tileSize, tileSize);
+        }
       }
-      
-    //   ctx.fillStyle = parity ? "#fff" : "#000";
-    //   ctx.fillText(tileNum, xx, yy);
+
+      if (tileNum === highlightNum) {
+        ctx.fillStyle = "rgba(250,130,55, 0.6)";
+        // console.log([x, y]);
+        if (isArrayInArray(kitchen, [x, y])) {
+          console.log("in kitchen");
+          // for (let i = 0; y < kitchen.length; y++) {
+          //   const kxx = kitchen[i][0] * tileSize;
+          //   const kyy = kitchen[i][1] * tileSize;
+          //   ctx.fillRect(kxx, kyy, tileSize, tileSize);
+          // }
+          for (let i = 0; i < kitchen.length; i++) {
+            const kxx = kitchen[i][0] * tileSize;
+            const kyy = kitchen[i][1] * tileSize;
+            ctx.fillRect(kxx, kyy, tileSize, tileSize);
+
+          }
+        }
+      }
+
+      //   ctx.fillStyle = parity ? "#fff" : "#000";
+      //   ctx.fillText(tileNum, xx, yy);
     }
   }
 };
@@ -103,7 +141,7 @@ canvas.addEventListener("mousemove", evt => {
   const tileX = ~~(evt.offsetX / tileSize);
   const tileY = ~~(evt.offsetY / tileSize);
   const tileNum = tileX + canvas.width / tileSize * tileY;
-  
+
   if (tileNum !== lastTile) {
     lastTile = tileNum;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -111,7 +149,7 @@ canvas.addEventListener("mousemove", evt => {
     ctx.drawImage(img, 0, 0, 900, 900);
     drawGrid(canvas, ctx, tileSize, tileNum);
     drawPins(ctx, tileSize, pinCoord);
-  }  
+  }
   status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
   tile coords : {${tileX}, ${tileY}}, tile value: ${BOARD_MATRIX[tileY][tileX]}
   tile number : ${tileNum}`;
@@ -121,7 +159,7 @@ canvas.addEventListener("click", event => {
   status.innerText += "\n  [clicked]";
   const tileX = ~~(event.offsetX / tileSize);
   const tileY = ~~(event.offsetY / tileSize);
-  ctx.clearRect(pinCoord[0], pinCoord[1], tileSize, tileSize);
+  // ctx.clearRect(pinCoord[0], pinCoord[1], tileSize, tileSize);
   pinCoord[0] = tileX;
   pinCoord[1] = tileY;
 });
@@ -142,12 +180,12 @@ const diceButton = document.getElementById("dice");
 
 
 diceButton.addEventListener("click", evt => {
-    var diceResult = getDice()
-    var data = diceResult.then((data) => {
-        status.innerText += `\n   dice: ${data.dice}`
-    });
-    
-} )
+  var diceResult = getDice()
+  var data = diceResult.then((data) => {
+    status.innerText += `\n   dice: ${data.dice}`
+  });
+
+})
 
 const cardsDiv = document.getElementById("cards");
 const test_cards = [
@@ -155,7 +193,7 @@ const test_cards = [
   "./assets/cards/ROPE.jpg", "./assets/cards/REVOLVER.jpg"
 ];
 
-for (var i =0; i < test_cards.length; i++) {
+for (var i = 0; i < test_cards.length; i++) {
   const new_card = document.createElement("img");
   new_card.id = `card_${i}`;
   new_card.className = "card";
