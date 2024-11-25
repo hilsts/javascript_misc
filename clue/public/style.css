@@ -6,8 +6,11 @@
     align-items: center;
 }
 
+#cards {
+    margin-top: 5px;
+}
+
 .card {
     width: 100px;
     height: 150px;
-
 }

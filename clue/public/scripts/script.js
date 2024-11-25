@@ -1,14 +1,4 @@
-async function fetchAsync (url) {
-    let response = await fetch(url);
-    let data = response.json();
-    return data;
-  }
-
-function getDice () {
-    const dice_url = 'http://127.0.0.1:8000/dice';
-    dice_result = fetchAsync(dice_url);
-    return dice_result
-}
+import { getDice } from './requests.js';
 
 // const myCanvas = document.getElementById("myCanvas");
 // const myctx = myCanvas.getContext("2d");
@@ -49,21 +39,30 @@ const BOARD_MATRIX = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  
 ]
 
-
+const drawPins = (ctx, tileSize, pinCoord) => {
+  const pinX = (pinCoord[0] * tileSize) + tileSize/2;
+  const pinY = (pinCoord[1] * tileSize) + tileSize/2;
+  ctx.arc(pinX, pinY, tileSize/2, 0, 2 * Math.PI);
+  ctx.fillStyle = 'red';
+  ctx.fill();
+  ctx.lineWidth = 2;
+}
 
 const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
+
   for (let y = 0; y < canvas.width / tileSize; y++) {
     for (let x = 0; x < canvas.height / tileSize; x++) {
       const parity = (x + y) % 2;
       const tileNum = x + canvas.width / tileSize * y;
       const xx = x * tileSize;
       const yy = y * tileSize;
-
     
       if (BOARD_MATRIX[y][x] != 0) {
+        ctx.strokeStyle = "black";
         ctx.strokeRect(xx, yy, tileSize, tileSize);
+        
         if (tileNum === highlightNum) {
-            ctx.fillStyle = "#f0f";
+            ctx.fillStyle = "white";
             ctx.fillRect(xx, yy, tileSize, tileSize);
           }
       }
@@ -83,6 +82,7 @@ ctx.textBaseline = "top";
 const tileSize = canvas.width / size;
 const status = document.createElement("pre");
 let lastTile = -1;
+ctx.drawImage(img, 0, 0, 900, 900);
 
 // ctx.drawImage(img, 0, 0);
 
@@ -103,9 +103,12 @@ canvas.addEventListener("mousemove", evt => {
   if (tileNum !== lastTile) {
     lastTile = tileNum;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
-    drawGrid(canvas, ctx, tileSize, tileNum);
+    // ctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
+    ctx.drawImage(img, 0, 0, 900, 900);
+    drawGrid(canvas, ctx, tileSize, tileNum, [1, 6]);
   }
+
+  drawPins(ctx, tileSize, [tileX, tileY]);
   
   status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
   tile coords : {${tileX}, ${tileY}}, tile value: ${BOARD_MATRIX[tileY][tileX]}
@@ -114,6 +117,10 @@ canvas.addEventListener("mousemove", evt => {
 
 canvas.addEventListener("click", event => {
   status.innerText += "\n  [clicked]";
+  const tileX = ~~(event.offsetX / tileSize);
+  const tileY = ~~(event.offsetY / tileSize);
+
+  
 });
 
 canvas.addEventListener("mouseout", event => {
@@ -140,15 +147,13 @@ diceButton.addEventListener("click", evt => {
 
 const cardsDiv = document.getElementById("cards");
 const test_cards = [
-  "./assets/cards/BILLIARD_ROOM.jpg", "./assets/cards/MISS_SCARLET.jpg", "./assets/cards/LEAD_PIPE.jpg",
+  "./assets/cards/CONSERVATORY.jpg", "./assets/cards/MISS_SCARLET.jpg", "./assets/cards/LEAD_PIPE.jpg",
   "./assets/cards/ROPE.jpg", "./assets/cards/REVOLVER.jpg"
 ];
 
-
-
 for (var i =0; i < test_cards.length; i++) {
   const new_card = document.createElement("img");
-  new_card.id = "card_" + String(i);
+  new_card.id = `card_${i}`;
   new_card.className = "card";
   new_card.src = test_cards[i];
   console.log(new_card);
