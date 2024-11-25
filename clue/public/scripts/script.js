@@ -40,12 +40,15 @@ const BOARD_MATRIX = [
 ]
 
 const drawPins = (ctx, tileSize, pinCoord) => {
+  
   const pinX = (pinCoord[0] * tileSize) + tileSize/2;
   const pinY = (pinCoord[1] * tileSize) + tileSize/2;
+  ctx.beginPath();
   ctx.arc(pinX, pinY, tileSize/2, 0, 2 * Math.PI);
   ctx.fillStyle = 'red';
   ctx.fill();
   ctx.lineWidth = 2;
+
 }
 
 const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
@@ -84,6 +87,7 @@ const status = document.createElement("pre");
 let lastTile = -1;
 ctx.drawImage(img, 0, 0, 900, 900);
 
+var pinCoord = [];
 // ctx.drawImage(img, 0, 0);
 
 const boardDiv = document.getElementById("board");
@@ -105,11 +109,9 @@ canvas.addEventListener("mousemove", evt => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // ctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
     ctx.drawImage(img, 0, 0, 900, 900);
-    drawGrid(canvas, ctx, tileSize, tileNum, [1, 6]);
-  }
-
-  drawPins(ctx, tileSize, [tileX, tileY]);
-  
+    drawGrid(canvas, ctx, tileSize, tileNum);
+    drawPins(ctx, tileSize, pinCoord);
+  }  
   status.innerText = `  mouse coords: {${evt.offsetX}, ${evt.offsetX}}
   tile coords : {${tileX}, ${tileY}}, tile value: ${BOARD_MATRIX[tileY][tileX]}
   tile number : ${tileNum}`;
@@ -119,9 +121,11 @@ canvas.addEventListener("click", event => {
   status.innerText += "\n  [clicked]";
   const tileX = ~~(event.offsetX / tileSize);
   const tileY = ~~(event.offsetY / tileSize);
-
-  
+  ctx.clearRect(pinCoord[0], pinCoord[1], tileSize, tileSize);
+  pinCoord[0] = tileX;
+  pinCoord[1] = tileY;
 });
+
 
 canvas.addEventListener("mouseout", event => {
   drawGrid(canvas, ctx, tileSize);
