@@ -52,9 +52,11 @@ const kitchen = [[19, 19], [20, 19], [21, 19], [22, 19], [23, 19], [19, 20], [20
 [22, 20], [23, 20], [24, 20], [19, 21], [20, 21], [21, 21], [22, 21], [23, 21], [24, 21], [19, 22], [20, 22], [21, 22], [22, 22], [23, 22],
 [24, 22], [19, 23], [20, 23], [21, 23], [22, 23], [23, 23], [24, 23], [19, 24], [20, 24], [21, 24], [22, 24], [23, 24], [24, 24]]
 
-const kitchen_path = [
-  [19, 19], [24, 19], [24, 20], [25, 20], [25, 25], [19, 25], [19, 19]
-]
+const dice_path_result = [[22, 8], [20, 8], [12, 7], [17, 3], [17, 9], [17, 6], [19, 9], [11, 8], [16, 4], [16, 7], [13, 8], [15, 11], [16, 10], [15, 8], [18, 7], [16, 13], [18, 10], [21, 9], [20, 7], [22, 7], [17, 2], [17, 5], [17, 8], [19, 8], [13, 7], [16, 3], [16, 9], [16, 6], [16, 12], [18, 9], [15, 10], [18, 6], [20, 9], [21, 8], [22, 9], [12, 8], [23, 8], [17, 4], [14, 8], [17, 7], [19, 7], [16, 5], [15, 9], [16, 8], [15, 12], [16, 11], [18, 8], [21, 7]]
+
+// const kitchen_path = [
+//   [19, 19], [24, 19], [24, 20], [25, 20], [25, 25], [19, 25], [19, 19]
+// ]
 
 const drawPins = (ctx, tileSize, pinCoord) => {
 
@@ -65,51 +67,45 @@ const drawPins = (ctx, tileSize, pinCoord) => {
   ctx.fillStyle = 'red';
   ctx.fill();
   ctx.lineWidth = 2;
-
 }
 
 const drawGrid = (canvas, ctx, tileSize, highlightNum) => {
 
   for (let y = 0; y < canvas.width / tileSize; y++) {
     for (let x = 0; x < canvas.height / tileSize; x++) {
-      const parity = (x + y) % 2;
+      // const parity = (x + y) % 2;
       const tileNum = x + canvas.width / tileSize * y;
       const xx = x * tileSize;
       const yy = y * tileSize;
+
+
+      if (isArrayInArray(dice_path_result, [x, y])) {
+        ctx.fillStyle = "rgba(225, 245, 144, 0.6)";
+        ctx.fillRect(xx, yy, tileSize, tileSize);
+      }
 
       if (BOARD_MATRIX[y][x] != 0) {
         ctx.strokeStyle = "black";
         ctx.strokeRect(xx, yy, tileSize, tileSize);
 
         if (tileNum === highlightNum) {
-          // ctx.fillStyle = "white";
-          // (250,130,55, 0.4) <-- laranja complementar
           ctx.fillStyle = "rgba(55, 175, 250, 0.4)";
           ctx.fillRect(xx, yy, tileSize, tileSize);
         }
       }
 
       if (tileNum === highlightNum) {
-        ctx.fillStyle = "rgba(250,130,55, 0.6)";
-        // console.log([x, y]);
+        ctx.fillStyle = "rgba(250,130,55, 0.1)";
         if (isArrayInArray(kitchen, [x, y])) {
           console.log("in kitchen");
-          // for (let i = 0; y < kitchen.length; y++) {
-          //   const kxx = kitchen[i][0] * tileSize;
-          //   const kyy = kitchen[i][1] * tileSize;
-          //   ctx.fillRect(kxx, kyy, tileSize, tileSize);
-          // }
           for (let i = 0; i < kitchen.length; i++) {
             const kxx = kitchen[i][0] * tileSize;
             const kyy = kitchen[i][1] * tileSize;
             ctx.fillRect(kxx, kyy, tileSize, tileSize);
-
           }
         }
       }
 
-      //   ctx.fillStyle = parity ? "#fff" : "#000";
-      //   ctx.fillText(tileNum, xx, yy);
     }
   }
 };
@@ -145,7 +141,6 @@ canvas.addEventListener("mousemove", evt => {
   if (tileNum !== lastTile) {
     lastTile = tileNum;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // ctx.drawImage(img, dx=0, dy=0, dWidth=900, dHeight=900);
     ctx.drawImage(img, 0, 0, 900, 900);
     drawGrid(canvas, ctx, tileSize, tileNum);
     drawPins(ctx, tileSize, pinCoord);
@@ -159,7 +154,6 @@ canvas.addEventListener("click", event => {
   status.innerText += "\n  [clicked]";
   const tileX = ~~(event.offsetX / tileSize);
   const tileY = ~~(event.offsetY / tileSize);
-  // ctx.clearRect(pinCoord[0], pinCoord[1], tileSize, tileSize);
   pinCoord[0] = tileX;
   pinCoord[1] = tileY;
 });
